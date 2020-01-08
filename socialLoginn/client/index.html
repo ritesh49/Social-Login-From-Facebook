@@ -1,0 +1,218 @@
+<style>
+    @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,600,400italic);
+  
+  
+     .login_container {
+        max-width: 400px;
+        width: 100%;
+        margin: 0 auto;
+        position: relative;
+    } 
+  
+    * {
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+    }
+  
+    #login input[type="text"],
+    #login input[type="Password"],
+  
+    #login button[type="button"] {
+        font: 400 12px/16px "Roboto", Helvetica, Arial, sans-serif;
+        border-radius: 3px;
+        height: 45px;
+        width:100%;
+    }
+  
+    #login {
+        border-radius: 7px;
+        background: #F9F9F9;
+        padding: 25px;
+        margin: 50px 0;
+        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5), 0 5px 5px 0 rgba(0, 0, 0, 0.5);
+    }
+  
+    #login h3 {
+        display: block;
+        font-size: 30px;
+        font-weight: 300;
+        margin-bottom: 10px;
+    }
+  
+    #login h4 {
+        margin: 5px 0 15px;
+        display: block;
+        font-size: 13px;
+        font-weight: 400;
+    }
+  
+    fieldset {
+        border: medium none !important;
+        margin: 0 0 10px;
+        min-width: 100%;
+        padding: 0;
+        width: 100%;
+    }
+  
+  
+   
+  
+    
+    #login button[type="button"] {
+        cursor: pointer;
+        width: 100%;
+        border: none;
+        background: #4CAF50;
+        color: #FFF;
+        margin: 0 0 5px;
+        padding: 10px;
+        font-size: 15px;
+    }
+  
+    #login button[type="button"]:hover {
+        background:forestgreen;
+        -webkit-transition: background 0.3s ease-in-out;
+        -moz-transition: background 0.3s ease-in-out;
+        transition: background-color 0.3s ease-in-out;
+    }
+  
+    #login button[type="button"]:active {
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+    }
+  
+    .copyright {
+        text-align: center;
+    }
+  
+  
+    #login button[class="cancelbtn"]{
+        cursor: pointer;
+        width: 100%;
+        border: none;
+        background:red;
+        color: #FFF;
+        margin: 0 0 5px;
+        padding: 10px;
+        font-size: 15px;
+    }
+    #login button[class="cancelbtn"]:hover {
+        background:darkred;
+        -webkit-transition: background 0.3s ease-in-out;
+        -moz-transition: background 0.3s ease-in-out;
+        transition: background-color 0.3s ease-in-out;
+    }
+  
+    #login button[class="forgotpsw"]{
+        cursor: pointer;
+        width: 100%;
+        border: none;
+        background:dodgerblue;
+        color: #FFF;
+        margin: 0 0 5px;
+        padding: 10px;
+        font-size: 15px;
+    }
+  
+    #login button[class="forgotpsw"]:hover {
+        background:mediumblue;
+        -webkit-transition: background 0.3s ease-in-out;
+        -moz-transition: background 0.3s ease-in-out;
+        transition: background-color 0.3s ease-in-out;
+    }
+  </style>
+<script async defer src="https://connect.facebook.net/en_US/sdk.js"></script>
+<script>
+    window.fbAsyncInit = function() {
+  // FB JavaScript SDK configuration and setup
+  FB.init({
+    appId      : '457627965188595', // FB App ID
+    cookie     : true,  // enable cookies to allow the server to access the session
+    xfbml      : true,  // parse social plugins on this page
+    version    : 'v5.0' // use graph api version 2.8
+  });
+  
+  // Check whether the user already logged in
+  FB.getLoginStatus(function(response) {
+      if (response.status === 'connected') {
+          //display user data
+          getFbUserData();
+      }
+  });
+};
+
+// // Load the JavaScript SDK asynchronously
+// (function(d, s, id) {
+//     var js, fjs = d.getElementsByTagName(s)[0];
+//     if (d.getElementById(id)) return;
+//     js = d.createElement(s); js.id = id;
+//     js.src = "//connect.facebook.net/en_US/sdk.js";
+//     fjs.parentNode.insertBefore(js, fjs);
+// }(document, 'script', 'facebook-jssdk'));
+
+// Facebook login with JavaScript SDK
+function fbLogin() {
+  FB.login(function (response) {
+      if (response.authResponse) {
+          // Get and display the user profile data
+          getFbUserData();
+      } else {
+          document.getElementById('status').innerHTML = 'User cancelled login or did not fully authorize.';
+      }
+  }, {scope: 'email'});
+}
+
+// Fetch the user profile data from facebook
+function getFbUserData(){
+  FB.api('/me', {locale: 'en_US', fields: 'id,first_nam7e,last_name,email,link,gender,locale,picture'},
+  function (response) {
+      document.getElementById('fbLink').setAttribute("onclick","fbLogout()");
+      document.getElementById('fbLink').innerHTML = 'Logout from Facebook';
+      document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.first_name + '!';
+      document.getElementById('userData').innerHTML = '<p><b>FB ID:</b> '+response.id+'</p><p><b>Name:</b> '+response.first_name+' '+response.last_name+'</p><p><b>Email:</b> '+response.email+'</p><p><b>Gender:</b> '+response.gender+'</p><p><b>Locale:</b> '+response.locale+'</p><p><b>Picture:</b> <img src="'+response.picture.data.url+'"/></p><p><b>FB Profile:</b> <a target="_blank" href="'+response.link+'">click to view profile</a></p>';
+  });
+}
+
+// Logout from facebook
+function fbLogout() {
+  FB.logout(function() {
+      document.getElementById('fbLink').setAttribute("onclick","fbLogin()");
+      document.getElementById('fbLink').innerHTML = '<img src="fblogin.png"/>';
+      document.getElementById('userData').innerHTML = '';
+      document.getElementById('status').innerHTML = 'You have successfully logout from Facebook.';
+  });
+}
+</script>
+  
+  
+  <div class="login_container" style="font-family: Arial, Helvetica, sans-serif;">
+    <form id="login" action="" method="post">
+        <h2 id="response"></h2>
+        <h3>Login</h3>
+        <h4>Login to enjoy the service</h4>
+        <fieldset>
+            <input placeholder="Username" id="UserName" type="text" tabindex="1" required autofocus value="">
+        </fieldset>
+        <fieldset>
+            <input placeholder="Password" id="Password"  type="password" tabindex="2" required value="">
+        </fieldset>
+       
+        <fieldset>
+            <label style="color:black">
+                <input type="checkbox"name="remember"> Remember me
+            </label>
+        </fieldset>
+        <fieldset>
+            <div id="status"></div>
+            <button name="Login" type="Button" id="fbLink" onclick="fbLogin()">Login</button>
+            <div id="userData"></div>
+        </fieldset><br>
+       <fieldset>
+        <button type="button" class="cancelbtn" onclick="window.location.href = 'Home.html'" >Cancel</button>
+        </fieldset><br>
+        <fieldset>
+        <button type="button" class="forgotpsw">Forgot password</button>
+        </fieldset><br>
+    </form>
+  </div>＀
